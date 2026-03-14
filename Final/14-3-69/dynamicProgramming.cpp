@@ -123,6 +123,46 @@ private:
         return memo[x1][y1] = matrix[x1][y1] + min(down, right);
     }
 
+    int seven(vector<int> &matrix, int L, vector<int> &memo)
+    {
+        if (L == 0)
+        {
+            return 0;
+        }
+
+        if (L < 0)
+        {
+            return -1e3;
+        }
+
+        if (memo[L] != -1)
+        {
+            return memo[L];
+        }
+        int maxPrice = -1e3;
+        for (int i = 1; i <= L; i++)
+        {
+            int select = matrix[i - 1] + seven(matrix, L - i, memo);
+            maxPrice = max(maxPrice, select);
+        }
+        return memo[L] = maxPrice;
+    }
+
+    int eight(vector<int> &coins, int n, int k, vector<int> &memo)
+    {
+        memo[0] = 1;
+
+        for (int i = 0; i < k; i++)
+        {
+            for (int j = coins[i]; j <= n; j++)
+            {
+                memo[j] += memo[j - coins[i]];
+            }
+        }
+
+        return memo[n];
+    }
+
 public:
     void oneDriver()
     {
@@ -203,6 +243,33 @@ public:
         cout << six(matrix, x1, y1, x2, y2, memo);
         return;
     }
+
+    void sevenDriver()
+    {
+        int L;
+        cin >> L;
+        vector<int> matrix(L);
+        for (int i = 0; i < L; i++)
+        {
+            cin >> matrix[i];
+        }
+        vector<int> memo(L + 1, -1);
+        cout << seven(matrix, L, memo);
+        return;
+    }
+    void eightDriver()
+    {
+        int k, n;
+        cin >> n >> k;
+        vector<int> coins(k);
+        for (int i = 0; i < k; i++)
+        {
+            cin >> coins[i];
+        }
+        vector<int> memo(n + 1, 0);
+        cout << eight(coins, n, k, memo);
+        return;
+    }
 };
 
 int main()
@@ -213,7 +280,9 @@ int main()
     // dp.threeDriver();
     // dp.fourDriver();
     // dp.fiveDriver();
-    dp.sixDriver();
+    // dp.sixDriver();
+    // dp.sevenDriver();
+    dp.eightDriver();
 
     return 0;
 }
